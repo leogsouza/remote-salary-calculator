@@ -36,7 +36,8 @@ const NumberFormatCustom = props => {
 class App extends Component {
   state = {
     salary: 0,
-    result: 0
+    result: 0,
+    converted: 0,
   };
 
   handleChange = event => {
@@ -62,7 +63,7 @@ class App extends Component {
       result: result
     });
 
-    this.currencyConverterHandler(this.state.result);
+    this.currencyConverterHandler(result);
   };
 
   currencyConverterHandler = amount => {
@@ -72,8 +73,15 @@ class App extends Component {
       base: "USD",
       symbols: "BRL"
     };
-    Axios.get(`${url}/latest?${querystring.stringify(params)}`).then(response =>
-      console.log("response currency", response)
+    Axios.get(`${url}/latest?${querystring.stringify(params)}`).then(response => {
+      const {rates} = response.data;
+      const currentRate = rates[params.symbols].toFixed(2);
+      const valueConverted = (currentRate * amount).toFixed(2);
+      console.log(currentRate, amount)
+
+      this.setState({converted: valueConverted});
+
+    }
     );
   };
 
@@ -109,6 +117,16 @@ class App extends Component {
                   thousandSeparator={true}
                   displayType={"text"}
                   prefix={"$"}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <label>Salary Converted to: </label><NumberFormat
+                  value={this.state.converted}
+                  thousandSeparator={true}
+                  displayType={"text"}
+                  prefix={"R$"}
                   decimalScale={2}
                   fixedDecimalScale={true}
                 />
