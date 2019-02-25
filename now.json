@@ -4,6 +4,9 @@
   "builds": [
       { "src": "package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
   ],
+  "env": {
+    "REACT_APP_CURRENCY_API_URL": "@currency-api-url"
+  },
   "routes": [
     { "src": "^/static/(.*)", "headers": { "cache-control": "s-maxage=31536000,immutable" }, "dest": "/static/$1" },
     { "src": "^/favicon.ico", "dest": "/favicon.ico" },
