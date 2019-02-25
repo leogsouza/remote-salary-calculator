@@ -10,9 +10,9 @@ import NumberFormat from "react-number-format";
 import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 import "./App.css";
+import nowEnv from 'now-env';
 
-require("now-env");
-
+nowEnv.config();
 
 const NumberFormatCustom = props => {
   const { inputRef, onChange, ...other } = props;
