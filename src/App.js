@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import Axios from "axios";
 import querystring from "querystring";
-import dotenv from "dotenv";
-
 import NavBar from "./components/Navbar/Navbar";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -12,7 +10,9 @@ import NumberFormat from "react-number-format";
 import TextField from "@material-ui/core/TextField";
 import PropTypes from "prop-types";
 import "./App.css";
-dotenv.config();
+
+require("now-env");
+
 
 const NumberFormatCustom = props => {
   const { inputRef, onChange, ...other } = props;
