@@ -36,6 +36,7 @@ class App extends Component {
     salary: 0,
     result: 0,
     converted: 0,
+    brazilianSalary: 0
   };
 
   handleChange = event => {
@@ -62,6 +63,7 @@ class App extends Component {
     });
 
     this.currencyConverterHandler(result);
+    
   };
 
   currencyConverterHandler = amount => {
@@ -79,9 +81,22 @@ class App extends Component {
 
       this.setState({converted: valueConverted});
 
-    }
-    );
+      this.getBrazilianSalary(valueConverted);
+
+    });
   };
+
+  getBrazilianSalary(salary) {
+    const ALIQ_IRRF = 0.275;
+    const VL_PER_DEP = 189.59
+    const DEDUCT_IRRF = 869.36
+    const INSS = 642.34
+
+    let irrf = (salary - VL_PER_DEP - INSS) * ALIQ_IRRF - DEDUCT_IRRF;
+    console.log(irrf, salary);
+    let result = salary - INSS - irrf;
+    this.setState({brazilianSalary: result});
+  }
 
   render() {
     return (
@@ -122,6 +137,16 @@ class App extends Component {
               <Grid item xs={12}>
                 <label>Salary Converted to: </label><NumberFormat
                   value={this.state.converted}
+                  thousandSeparator={true}
+                  displayType={"text"}
+                  prefix={"R$"}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <label>Brazilian Salary: </label><NumberFormat
+                  value={this.state.brazilianSalary}
                   thousandSeparator={true}
                   displayType={"text"}
                   prefix={"R$"}
