@@ -33,70 +33,44 @@ const NumberFormatCustom = props => {
 };
 class App extends Component {
   state = {
-    salary: 0,
-    result: 0,
+    annual: 0,
+    monthly: 0,
     converted: 0,
-    brazilianSalary: 0
+    calculated: 0
   };
 
   handleChange = event => {
     this.setState({
-      salary: event.target.value
+      annual: event.target.value
     });
   };
 
   handleValueChange = values => {
-    const { formattedValue, value } = values;
-    // formattedValue = $2,223
-    // value ie, 2223
-    console.log(value, formattedValue);
-    this.setState({ salary: value });
+    this.setState({ annual: values.value });
   };
 
   handleCalculate = () => {
-    const salary = this.state.salary;
+    const salary = this.state.annual;
 
-    const result = salary / 12;
-
-    this.setState({
-      result: result
-    });
-
-    this.currencyConverterHandler(result);
+    this.currencyConverterHandler(salary);
     
   };
 
   currencyConverterHandler = amount => {
     const url = process.env.REACT_APP_CURRENCY_API_URL;
-    console.log(process.env);
     const params = {
-      base: "USD",
-      symbols: "BRL"
+      from: "USD",
+      to: "BRL"
     };
-    Axios.get(`${url}/latest?${querystring.stringify(params)}`).then(response => {
-      const {rates} = response.data;
-      const currentRate = rates[params.symbols].toFixed(2);
-      const valueConverted = (currentRate * amount).toFixed(2);
-      console.log(currentRate, amount)
-
-      this.setState({converted: valueConverted});
-
-      this.getBrazilianSalary(valueConverted);
-
+    Axios.get(`${url}/calculate/from/${params.from}/to/${params.to}/amount/${amount}`).then(response => {
+      this.setState({
+        annual: response.data.annual_salary,
+        monthly: response.data.monthly_salary,
+        converted: response.data.converted_salary,
+        calculated: response.data.calculated_salary
+      });
     });
   };
-
-  getBrazilianSalary(salary) {
-    const ALIQ_IRRF = 0.275;
-    const VL_PER_DEP = 189.59
-    const DEDUCT_IRRF = 869.36
-    const INSS = 642.34
-
-    let irrf = (salary - VL_PER_DEP - INSS) * ALIQ_IRRF - DEDUCT_IRRF;
-    console.log(irrf, salary);
-    let result = salary - INSS - irrf;
-    this.setState({brazilianSalary: result});
-  }
 
   render() {
     return (
@@ -125,8 +99,8 @@ class App extends Component {
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <label>Salary calculated: </label><NumberFormat
-                  value={this.state.result}
+                <label>Salary Monthly: </label><NumberFormat
+                  value={this.state.monthly}
                   thousandSeparator={true}
                   displayType={"text"}
                   prefix={"$"}
@@ -146,7 +120,7 @@ class App extends Component {
               </Grid>
               <Grid item xs={12}>
                 <label>Brazilian Salary: </label><NumberFormat
-                  value={this.state.brazilianSalary}
+                  value={this.state.calculated}
                   thousandSeparator={true}
                   displayType={"text"}
                   prefix={"R$"}
