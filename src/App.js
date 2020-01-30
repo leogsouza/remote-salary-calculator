@@ -60,9 +60,13 @@ class App extends Component {
     const url = process.env.REACT_APP_CURRENCY_API_URL;
     const params = {
       from: "USD",
-      to: "BRL"
+      to: "BRL",
+      type: "annual",
+      amount: amount
     };
-    Axios.get(`${url}/calculate/from/${params.from}/to/${params.to}/amount/${amount}`).then(response => {
+    const queryString = new URLSearchParams(params).toString();
+    console.log(queryString);
+    Axios.get(`${url}/salary/calculator?${queryString}`).then(response => {
       this.setState({
         annual: response.data.annual_salary,
         monthly: response.data.monthly_salary,
