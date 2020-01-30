@@ -65,7 +65,6 @@ class App extends Component {
       amount: amount
     };
     const queryString = new URLSearchParams(params).toString();
-    console.log(queryString);
     Axios.get(`${url}/salary/calculator?${queryString}`).then(response => {
       this.setState({
         annual: response.data.annual_salary,
