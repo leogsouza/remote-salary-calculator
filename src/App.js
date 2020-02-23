@@ -3,10 +3,9 @@ import Axios from "axios";
 import React, { Component } from "react";
 import NumberFormat from "react-number-format";
 import "./App.css";
+import Header from "./components/Header/Header";
 import NavBar from "./components/Navbar/Navbar";
 require('now-env')
-
-
 
 class App extends Component {
   state = {
@@ -57,12 +56,15 @@ class App extends Component {
     return (
       <React.Fragment>
           <div className="App">
+            <Header>
             <NavBar />
-              <Row gutter={[8,24]}>
-                <Col>
+            </Header>
+              <Row gutter={[0,16]}>
+                <Col span={24}>
                 <NumberFormat
                   className="ant-input"
-                  style={{width: '10em'}}
+                  style={{width: '15em'}}
+                  placeholder="Enter your salary"
                   getInputRef = {(el) => this.inputElem = el}
                   onValueChange={values => {
                     this.handleChange({
@@ -76,19 +78,18 @@ class App extends Component {
                 />
                 </Col>
               </Row>
-              <Row gutter={[8,24]}>
-                <Col>
+              <Row gutter={[0,16]}>
+                <Col span={24}>
                 <Button
-                  variant="contained"
-                  type="primary"
+                  className="calculate-btn"
                   onClick={this.handleCalculate}
                 >
                   Calculate
                 </Button>
                 </Col>
               </Row>
-              <Row gutter={[8,24]}>
-                <Col>
+              <Row gutter={[0,24]}>
+                <Col span={24}>
                 <label>Salary Monthly: </label><NumberFormat
                 value={this.state.monthly}
                 thousandSeparator={true}
