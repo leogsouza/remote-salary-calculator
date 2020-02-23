@@ -1,36 +1,13 @@
-import React, { Component } from "react";
+import { Button, Col, Row } from 'antd';
 import Axios from "axios";
-import querystring from "querystring";
-import NavBar from "./components/Navbar/Navbar";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-
+import React, { Component } from "react";
 import NumberFormat from "react-number-format";
-import TextField from "@material-ui/core/TextField";
-import PropTypes from "prop-types";
 import "./App.css";
-require('now-env');
+import NavBar from "./components/Navbar/Navbar";
+require('now-env')
 
-const NumberFormatCustom = props => {
-  const { inputRef, onChange, ...other } = props;
 
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={values => {
-        onChange({
-          target: {
-            value: values.value
-          }
-        });
-      }}
-      thousandSeparator
-      prefix="$"
-    />
-  );
-};
+
 class App extends Component {
   state = {
     annual: 0,
@@ -39,7 +16,7 @@ class App extends Component {
     calculated: 0
   };
 
-  handleChange = event => {
+  handleChange = event => {    
     this.setState({
       annual: event.target.value
     });
@@ -49,7 +26,7 @@ class App extends Component {
     this.setState({ annual: values.value });
   };
 
-  handleCalculate = () => {
+  handleCalculate = () => {    
     const salary = this.state.annual;
 
     this.currencyConverterHandler(salary);
@@ -66,6 +43,7 @@ class App extends Component {
     };
     const queryString = new URLSearchParams(params).toString();
     Axios.get(`${url}/salary/calculator?${queryString}`).then(response => {
+      console.log('response', response);
       this.setState({
         annual: response.data.annual_salary,
         monthly: response.data.monthly_salary,
@@ -78,70 +56,73 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <CssBaseline>
           <div className="App">
             <NavBar />
-            <Grid container spacing={24}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Salary Annual Value"
-                  onChange={this.handleChange}
-                  id="formatted-numberformat-input"
-                  InputProps={{
-                    inputComponent: NumberFormatCustom
+              <Row gutter={[8,24]}>
+                <Col>
+                <NumberFormat
+                  className="ant-input"
+                  style={{width: '10em'}}
+                  getInputRef = {(el) => this.inputElem = el}
+                  onValueChange={values => {
+                    this.handleChange({
+                      target: {
+                        value: values.value
+                      }
+                    });
                   }}
+                  thousandSeparator
+                  prefix="$"
                 />
-              </Grid>
-              <Grid item xs={12}>
+                </Col>
+              </Row>
+              <Row gutter={[8,24]}>
+                <Col>
                 <Button
                   variant="contained"
-                  color="primary"
+                  type="primary"
                   onClick={this.handleCalculate}
                 >
                   Calculate
                 </Button>
-              </Grid>
-              <Grid item xs={12}>
+                </Col>
+              </Row>
+              <Row gutter={[8,24]}>
+                <Col>
                 <label>Salary Monthly: </label><NumberFormat
-                  value={this.state.monthly}
-                  thousandSeparator={true}
-                  displayType={"text"}
-                  prefix={"$"}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <label>Salary Converted to: </label><NumberFormat
-                  value={this.state.converted}
-                  thousandSeparator={true}
-                  displayType={"text"}
-                  prefix={"R$"}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <label>Brazilian Salary: </label><NumberFormat
-                  value={this.state.calculated}
-                  thousandSeparator={true}
-                  displayType={"text"}
-                  prefix={"R$"}
-                  decimalScale={2}
-                  fixedDecimalScale={true}
-                />
-              </Grid>
-            </Grid>
+                value={this.state.monthly}
+                thousandSeparator={true}
+                displayType={"text"}
+                prefix={"$"}
+                decimalScale={2}
+                fixedDecimalScale={true}
+              />
+              <p></p>
+              <label>Salary Converted to: </label><NumberFormat
+                value={this.state.converted}
+                thousandSeparator={true}
+                displayType={"text"}
+                prefix={"R$"}
+                decimalScale={2}
+                fixedDecimalScale={true}
+              />
+              <p></p>
+              <label>Brazilian Salary: </label><NumberFormat
+                value={this.state.calculated}
+                thousandSeparator={true}
+                displayType={"text"}
+                prefix={"R$"}
+                decimalScale={2}
+                fixedDecimalScale={true}
+              />
+                </Col>
+              </Row>
           </div>
-        </CssBaseline>
       </React.Fragment>
     );
   }
 }
 
-NumberFormatCustom.propTypes = {
-  inputRef: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired
-};
+
 
 export default App;
