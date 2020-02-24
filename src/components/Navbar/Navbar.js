@@ -1,8 +1,6 @@
-import { Col, Row, Typography } from 'antd';
+import { Col, Row } from 'antd';
 import React from 'react';
 import './Navbar.css';
-
-const { Title } = Typography
 
 const Navbar = () => {
   return (
