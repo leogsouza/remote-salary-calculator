@@ -5,7 +5,6 @@ import NumberFormat from "react-number-format";
 import "./App.css";
 import Header from "./components/Header/Header";
 import NavBar from "./components/Navbar/Navbar";
-require('now-env')
 
 class App extends Component {
   state = {
