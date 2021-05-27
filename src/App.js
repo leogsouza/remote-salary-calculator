@@ -28,11 +28,7 @@ const App = () => {
   const [type, setType] = useState('annual');
   const [hours, setHours] = useState(8)
   const [showHours, setShowHours] = useState(false);
-  const [currency, setCurrency] = useState(currencyOptions[0].value)
-
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
+  const [currency, setCurrency] = useState(currencyOptions[0].value)  
 
   const handleTypeChange = event => {
     setType(event.target.value);
@@ -69,16 +65,20 @@ const App = () => {
       let reversedVal = val.replace(new RegExp("\\" + group, "g"), "");
       reversedVal = reversedVal.replace(new RegExp("\\" + decimal, "g"), ".");
   
-  
       reversedVal = reversedVal.replace(/[^0-9.]/g, "");
   
-      const digitsAfterDecimalCount = (reversedVal.split(".")[1] || []).length;
+      let digitsAfterDecimalCount = (reversedVal.split(".")[1] || []).length;
       const needsDigitsAppend = digitsAfterDecimalCount > 2;
   
       if (needsDigitsAppend) {
         reversedVal = reversedVal * Math.pow(10, digitsAfterDecimalCount -2);
       }
-      console.log(reversedVal);
+
+      if (digitsAfterDecimalCount === 1) {
+        reversedVal = reversedVal / 10;
+        digitsAfterDecimalCount++;
+      }
+      
       setValue(reversedVal);
       return Number.isNaN(reversedVal) ? 0 : reversedVal;
   
@@ -86,8 +86,6 @@ const App = () => {
       console.log(error);
     }
   };
-
-
 
   const currencyConverterHandler = amount => {
     const url = process.env.REACT_APP_CURRENCY_API_URL;
@@ -127,7 +125,7 @@ const App = () => {
                 </Radio.Group>
               </Col>
               <Col span={24}>
-              <Select
+                <Select
                   showSearch
                   value={currency}
                   style={{ width: '7rem', marginTop: '1rem',  marginRight: '1rem'}}
@@ -144,8 +142,7 @@ const App = () => {
                   style={{width: '15em'}}
                   formatter={currencyFormatter(currency)}
                   parser={currencyParser}
-                />               
-              
+                />
               </Col>
               <Col span={24} style={{display: showHours ? 'block' : 'none' }}>
                 <label>Hours per day: </label><InputNumber
@@ -156,40 +153,49 @@ const App = () => {
                 />
               </Col>
               <Col span={24}>
-              <Button
-                className="calculate-btn"
-                onClick={handleCalculate}
-              >
-                Calculate
-              </Button>
+                <Button
+                  className="calculate-btn"
+                  onClick={handleCalculate}
+                >
+                  Calculate
+                </Button>
               </Col>
               <Col span={24}>
-              <label>Salary Monthly: </label><NumberFormat
-              value={monthly}
-              thousandSeparator={true}
-              displayType={"text"}
-              prefix={"$"}
-              decimalScale={2}
-              fixedDecimalScale={true}
-            />
-            <p></p>
-            <label>Salary Converted to: </label><NumberFormat
-              value={converted}
-              thousandSeparator={true}
-              displayType={"text"}
-              prefix={"R$"}
-              decimalScale={2}
-              fixedDecimalScale={true}
-            />
-            <p></p>
-            <label>Brazilian Salary: </label><NumberFormat
-              value={calculated}
-              thousandSeparator={true}
-              displayType={"text"}
-              prefix={"R$"}
-              decimalScale={2}
-              fixedDecimalScale={true}
-            />
+                <label>Salary Annual: </label><NumberFormat
+                  value={annual}
+                  thousandSeparator={true}
+                  displayType={"text"}
+                  prefix={"$"}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                />
+                <p></p>
+                <label>Salary Monthly: </label><NumberFormat
+                  value={monthly}
+                  thousandSeparator={true}
+                  displayType={"text"}
+                  prefix={"$"}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                />
+                <p></p>
+                <label>Salary Converted to: </label><NumberFormat
+                  value={converted}
+                  thousandSeparator={true}
+                  displayType={"text"}
+                  prefix={"R$"}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                />
+                <p></p>
+                <label>Brazilian Salary: </label><NumberFormat
+                  value={calculated}
+                  thousandSeparator={true}
+                  displayType={"text"}
+                  prefix={"R$"}
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                />
               </Col>
             </Row>
         </div>
