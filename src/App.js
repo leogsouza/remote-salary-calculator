@@ -28,7 +28,8 @@ const App = () => {
   const [type, setType] = useState('annual');
   const [hours, setHours] = useState(8)
   const [showHours, setShowHours] = useState(false);
-  const [currency, setCurrency] = useState(currencyOptions[0].value)  
+  const [currency, setCurrency] = useState(currencyOptions[0].value);
+  const [currencySymbol, setCurrencySymbol] = useState(currencyOptions[0].symbol);
 
   const handleTypeChange = event => {
     setType(event.target.value);
@@ -37,6 +38,15 @@ const App = () => {
     else
       setShowHours(false)
   };
+
+  const handleCurrencyChange = currency => {
+    
+    const currencyOpt = currencyOptions.find(c => c.value === currency);
+    if (currencyOpt) {
+      setCurrencySymbol(currencyOpt.symbol);
+      setCurrency(currency)
+    }
+  }
 
   const handleCalculate = () => {
     currencyConverterHandler(value);    
@@ -108,7 +118,7 @@ const App = () => {
       setCalculated(response.data.calculated_salary);
     });
   };
-
+  
   return (
     <React.Fragment>
         <div className="App">
@@ -129,7 +139,7 @@ const App = () => {
                   showSearch
                   value={currency}
                   style={{ width: '7rem', marginTop: '1rem',  marginRight: '1rem'}}
-                  onChange={setCurrency}
+                  onChange={handleCurrencyChange}
                 >
                   {currencyOptions.map(opt => (
                     <Option key={opt.value} value={opt.value}>
@@ -138,7 +148,7 @@ const App = () => {
                   ))}
                 </Select>
                 <InputNumber
-                  defaultValue={0.00}
+                  defaultValue={null}
                   style={{width: '15em'}}
                   formatter={currencyFormatter(currency)}
                   parser={currencyParser}
@@ -165,7 +175,7 @@ const App = () => {
                   value={annual}
                   thousandSeparator={true}
                   displayType={"text"}
-                  prefix={"$"}
+                  prefix={currencySymbol}
                   decimalScale={2}
                   fixedDecimalScale={true}
                 />
@@ -174,7 +184,7 @@ const App = () => {
                   value={monthly}
                   thousandSeparator={true}
                   displayType={"text"}
-                  prefix={"$"}
+                  prefix={currencySymbol}
                   decimalScale={2}
                   fixedDecimalScale={true}
                 />
